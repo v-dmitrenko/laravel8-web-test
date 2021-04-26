@@ -1,0 +1,243 @@
+
+swagger: "2.0"
+info:
+  description: "This is a sample server Laravel8 server.
+
+
+    **Authentication**
+
+
+    This API uses token authentication (Bearer in HTTP Header). First you retrieve a new Bearer token using
+    login/password authentication. After that you can use it to access other resources.
+
+
+    **Bearer token example**
+
+
+    `Bearer sYFuat5lz1y5v0LrCt7LfqJpo1AkdLgm7LbY6eRibN4NYw9Srf6aMIRJM8KbTwM6`
+
+
+    The URL examples throughout this documentation use `token` as a placeholder. For these examples to work, you need to
+    substitute the value with your own access token.
+  "
+  version: "1.0.0"
+  title: "Swagger Laravel8"
+host: "localhost"
+basePath: "/api"
+tags:
+- name: "auth"
+  description: "User authorization and authentication"
+- name: "user"
+  description: "Everything about your Users"
+schemes:
+- "http"
+securityDefinitions:
+  key:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+  - key: []
+
+paths:
+  /auth/register:
+    post:
+      security: []
+      tags:
+      - "auth"
+      summary: "Register user into the system"
+      description: ""
+      operationId: "registerUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "formData"
+        description: "The user name for register"
+        required: true
+        type: "string"
+      - name: "email"
+        in: "formData"
+        description: "The user email for register"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      - name: "password_confirmation"
+        in: "formData"
+        description: "The password confirmation for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+        "422":
+          description: "Error: Unprocessable Entity. Invalid username/email/password/password_confirmation supplied"
+  /auth/register/confirm-email/{email}/token/{token}:
+    get:
+      security: []
+      tags:
+      - "auth"
+      summary: "User registration confirmation"
+      description: ""
+      operationId: "registerConfirmationUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "path"
+        description: "The user email for register"
+        required: true
+        type: "string"
+      - name: "token"
+        in: "path"
+        description: "The token for registration confirmation"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                description: "Success if confirmed, else error"
+              user:
+                type: "object"
+              token:
+                type: "string"
+  /auth/login:
+    post:
+      security: []
+      tags:
+      - "auth"
+      summary: "Login user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "The user email for register"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "The password for login in clear text"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                example: "success"
+              token:
+                type: "string"
+                example: "sYFuat5lz1y5v0LrCt7LfqJpo1AkdLgm7LbY6eRibN4NYw9Srf6aMIRJM8KbTwM6"
+              user:
+                type: "object"
+        "400":
+          description: "Error: Data is missing or need to confirm the account"
+        "401":
+          description: "Error: Unauthorized. Invalid credentials"
+        "500":
+          description: "Error: Could not create token"
+  /auth/refresh-token:
+    post:
+      tags:
+      - "auth"
+      summary: "Refresh token"
+      description: ""
+      operationId: "refreshToken"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                example: "success"
+              token:
+                type: "string"
+                example: "sYFuat5lz1y5v0LrCt7LfqJpo1AkdLgm7LbY6eRibN4NYw9Srf6aMIRJM8KbTwM6"
+              user:
+                type: "object"
+        "405":
+          description: "Error: Error expired token. Not able to refresh Token."
+        "500":
+          description: "Error: Token not provided"
+  /auth/logout:
+    post:
+      tags:
+      - "auth"
+      summary: "User logout"
+      description: ""
+      operationId: "logoutUser"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                example: "success"
+              message:
+                type: "string"
+              user:
+                type: "object"
+        "401":
+          description: "Error: Unauthorized. Invalid token"
+        "500":
+          description: "Error: Internal server error. Failed to logout"
+  /users:
+    get:
+      tags:
+      - "user"
+      summary: "Get list of users"
+      description: ""
+      operationId: "listUsers"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                example: "success"
+              users:
+                type: "object"
+              currentPage:
+                type: "integer"
+                example: 2
+              lastPage:
+                type: "integer"
+                example: 10
+        "401":
+          description: "Error: Unauthorized."
+
+
+
+
